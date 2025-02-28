@@ -3,7 +3,9 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 export default function TabLayout() {
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "blue", headerShown: false }}>
+    <Tabs
+      screenOptions={{ tabBarActiveTintColor: "#0D7377", headerShown: false }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -14,11 +16,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="compass"
         options={{
-          title: "Explore",
+          title: "Compass",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="search" color={color} />
+            <FontAwesome size={28} name="compass" color={color} />
           ),
         }}
       />
@@ -27,7 +29,7 @@ export default function TabLayout() {
         options={{
           title: "Map",
           tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="map" color={color} />
+            <FontAwesome size={28} name="globe" color={color} />
           ),
         }}
       />

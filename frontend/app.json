@@ -24,6 +24,7 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
+      "expo-location",
       "expo-router",
       "@maplibre/maplibre-react-native",
       [
