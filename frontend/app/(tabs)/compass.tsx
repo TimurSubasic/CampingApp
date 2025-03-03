@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const explore = () => {
+const compass = () => {
   return (
     <View>
-      <Text>explore</Text>
+      <Text>compass</Text>
     </View>
   );
 };
 
-export default explore;
+export default compass;
