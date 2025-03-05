@@ -16,53 +16,59 @@ const MapLibre = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Alert.alert(
-          "Permission Denied",
-          "Location access is needed to center the map."
-        );
-        setLoading(false);
-        return;
-      }
-      setLoading(false);
-    })();
-  }, []);
+    let locationSubscription: Location.LocationSubscription | null = null;
 
-  const watchLocation = async () => {
-    await Location.watchPositionAsync(
-      {
-        accuracy: Location.Accuracy.Highest,
-        distanceInterval: 1,
-      },
-      (location) => {
-        setCoords({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        });
-      }
-    );
-  };
-
-  useEffect(() => {
-    if (!coords) {
-      // Start the initial location watch
-      watchLocation();
-
-      // Backup check after 5 seconds if coords are not available
-      const timeoutId = setTimeout(() => {
-        if (!coords) {
-          watchLocation(); // Retry watching location if no coordinates
+    const setupLocation = async () => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          Alert.alert(
+            "Permission Denied",
+            "Location access is needed to center the map."
+          );
+          setLoading(false);
+          return;
         }
-      }, 5000);
 
-      // Cleanup the timeout if the component unmounts
-      return () => {
-        clearTimeout(timeoutId);
-      };
-    }
-  }, [coords]); // Only runs if coords is not already available
+        // Get initial location
+        const initialLocation = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Highest,
+        });
+
+        setCoords({
+          latitude: initialLocation.coords.latitude,
+          longitude: initialLocation.coords.longitude,
+        });
+
+        // Start watching location
+        locationSubscription = await Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.Highest,
+            distanceInterval: 1,
+          },
+          (location) => {
+            setCoords({
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+            });
+          }
+        );
+      } catch (error) {
+        Alert.alert("Error", "Failed to get location");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    setupLocation();
+
+    // Cleanup function
+    return () => {
+      if (locationSubscription) {
+        locationSubscription.remove();
+      }
+    };
+  }, []);
 
   if (loading) {
     return (

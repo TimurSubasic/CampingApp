@@ -15,15 +15,7 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="compass"
-        options={{
-          title: "Compass",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="compass" color={color} />
-          ),
-        }}
-      />
+
       <Tabs.Screen
         name="map"
         options={{
@@ -34,7 +26,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="tutorial"
+        name="newTrip"
+        options={{
+          title: "New Trip",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome size={28} name="plus-circle" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="(tutorial)"
         options={{
           title: "Tutorial",
           tabBarIcon: ({ color }) => (
