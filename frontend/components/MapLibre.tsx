@@ -1,19 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
   MapView,
   Camera,
-  PointAnnotation,
-  Callout,
+  UserLocation,
+  CameraRef,
 } from "@maplibre/maplibre-react-native";
 import * as Location from "expo-location";
-import { View, ActivityIndicator, Alert, Text } from "react-native";
+import { View, ActivityIndicator, Alert, TouchableOpacity } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const MapLibre = () => {
+  const cameraRef = useRef<CameraRef>(null);
   const [coords, setCoords] = useState<{
     longitude: number;
     latitude: number;
   } | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const centerOnUser = () => {
+    if (coords && cameraRef.current) {
+      cameraRef.current.setCamera({
+        centerCoordinate: [coords.longitude, coords.latitude],
+        zoomLevel: 11,
+        animationDuration: 1000,
+        animationMode: "easeTo",
+      });
+    }
+  };
 
   useEffect(() => {
     let locationSubscription: Location.LocationSubscription | null = null;
@@ -43,7 +56,7 @@ const MapLibre = () => {
         // Start watching location
         locationSubscription = await Location.watchPositionAsync(
           {
-            accuracy: Location.Accuracy.Highest,
+            accuracy: Location.Accuracy.Balanced,
             distanceInterval: 1,
           },
           (location) => {
@@ -85,32 +98,30 @@ const MapLibre = () => {
         >
           {coords ? (
             <Camera
+              ref={cameraRef}
               centerCoordinate={[coords.longitude, coords.latitude]}
               zoomLevel={11}
               animationDuration={3500}
               animationMode="easeTo"
             />
           ) : null}
-
-          {coords && (
-            <PointAnnotation
-              id="user"
-              coordinate={[coords.longitude, coords.latitude]}
-              title="Your location"
-              snippet="This is where you are located"
-            >
-              <Callout
-                style={{
-                  backgroundColor: "white",
-                  padding: 10,
-                  borderRadius: 10,
-                }}
-              >
-                <Text className="font-bold">You are here</Text>
-              </Callout>
-            </PointAnnotation>
-          )}
+          <UserLocation
+            renderMode="normal"
+            visible={true}
+            onUpdate={(location) => {
+              setCoords({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+              });
+            }}
+          />
         </MapView>
+        <TouchableOpacity
+          onPress={centerOnUser}
+          className="absolute top-4 right-4 bg-white p-4 rounded-full shadow-md"
+        >
+          <FontAwesome name="location-arrow" size={24} color="#0D7377" />
+        </TouchableOpacity>
       </View>
     );
   }
