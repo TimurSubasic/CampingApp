@@ -1,49 +1,87 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Barometer } from "expo-sensors";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+
+interface BarometerData {
+  pressure: number;
+}
+
+interface BarometerSubscription {
+  remove: () => void;
+}
 
 const BarometerScreen = () => {
   const [pressure, setPressure] = useState<number | null>(null);
   const [altitude, setAltitude] = useState<number | null>(null);
   const [previousPressure, setPreviousPressure] = useState<number | null>(null);
   const [showFeet, setShowFeet] = useState(false);
+  const [trend, setTrend] = useState<"up" | "down" | "stable">("stable");
+  const [isAvailable, setIsAvailable] = useState<boolean | null>(null);
 
   useEffect(() => {
-    let subscription;
-    Barometer.setUpdateInterval(1000);
+    let subscription: BarometerSubscription | undefined;
 
-    subscription = Barometer.addListener((data) => {
-      setPreviousPressure(pressure);
-      setPressure(data.pressure);
+    const setupBarometer = async () => {
+      const available = await Barometer.isAvailableAsync();
+      setIsAvailable(available);
 
-      // Calculate altitude using the barometric formula
-      // h = 44330 * (1 - (P/P0)^(1/5.255))
-      // where P0 is standard pressure at sea level (1013.25 hPa)
-      const altitudeMeters =
-        44330 * (1 - Math.pow(data.pressure / 1013.25, 1 / 5.255));
-      setAltitude(altitudeMeters);
-    });
+      if (available) {
+        Barometer.setUpdateInterval(1000);
+
+        const calculateAltitude = (pressure: number) => {
+          return 44330 * (1 - Math.pow(pressure / 1013.25, 1 / 5.255));
+        };
+
+        const updateTrend = (current: number, previous: number | null) => {
+          if (!previous) return "stable";
+          const diff = current - previous;
+          if (diff < 0.1) return "up";
+          if (diff > -0.1) return "down";
+          return trend; // Keep current trend if change is small
+        };
+
+        subscription = Barometer.addListener((data: BarometerData) => {
+          setPreviousPressure(pressure);
+          setPressure(data.pressure);
+
+          const newAltitude = calculateAltitude(data.pressure);
+          setAltitude(newAltitude);
+
+          setTrend(updateTrend(data.pressure, pressure));
+        });
+      }
+    };
+
+    setupBarometer();
 
     return () => {
-      subscription.remove();
+      if (subscription) {
+        subscription.remove();
+      }
     };
-  }, [pressure]);
+  }, [pressure, trend]);
 
   const getTrendIcon = () => {
-    if (!pressure || !previousPressure) return "minus";
-    const diff = pressure - previousPressure;
-    if (diff > 0.1) return "arrow-up";
-    if (diff < -0.1) return "arrow-down";
-    return "minus";
+    switch (trend) {
+      case "up":
+        return "arrow-up";
+      case "down":
+        return "arrow-down";
+      default:
+        return "minus";
+    }
   };
 
   const getTrendColor = () => {
-    if (!pressure || !previousPressure) return "gray";
-    const diff = pressure - previousPressure;
-    if (diff > 0.1) return "green";
-    if (diff < -0.1) return "red";
-    return "gray";
+    switch (trend) {
+      case "up":
+        return "green";
+      case "down":
+        return "red";
+      default:
+        return "gray";
+    }
   };
 
   const formatAltitude = (meters: number) => {
@@ -53,6 +91,26 @@ const BarometerScreen = () => {
     }
     return `${Math.round(meters)} m`;
   };
+
+  if (isAvailable === null) {
+    return (
+      <View className="flex-1 items-center justify-center bg-gray-100 p-4">
+        <Text className="text-lg text-gray-800">
+          Checking barometer availability...
+        </Text>
+      </View>
+    );
+  }
+
+  if (!isAvailable) {
+    return (
+      <View className="flex-1 items-center justify-center bg-gray-100 p-4">
+        <Text className="text-lg text-gray-800">
+          Barometer is not available on this device
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <View className="flex-1 items-center justify-center bg-gray-100 p-4">
