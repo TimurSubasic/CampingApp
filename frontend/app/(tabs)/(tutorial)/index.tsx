@@ -20,7 +20,7 @@ const TutorialIndex = () => {
     {
       title: "Barometer",
       path: "/(tutorial)/barometer",
-      icon: "mountain",
+      icon: "level-up",
     },
   ];
 
