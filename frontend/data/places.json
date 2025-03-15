@@ -1,0 +1,73 @@
+[
+    {
+      "id": 1,
+      "name": "Camping Sarajevo",
+      "image": "https://example.com/images/camping_sarajevo_1.jpg",
+      "desc": "A peaceful and quiet camping spot located just outside the city, ideal for families and nature lovers.",
+      "rating": 4.5,
+      "price": 25,
+      "duration": "2-3 days",
+      "location": {
+        "latitude": 43.8486,
+        "longitude": 18.3564
+      },
+      "category": "Family-friendly"
+    },
+    {
+      "id": 2,
+      "name": "Vrelo Bosne Camping",
+      "image": "https://example.com/images/vrelo_bosne_camping.jpg",
+      "desc": "Set near a natural spring, this camping spot offers a perfect escape with trails and water activities.",
+      "rating": 4.8,
+      "price": 30,
+      "duration": "1-4 days",
+      "location": {
+        "latitude": 43.9964,
+        "longitude": 18.2464
+      },
+      "category": "Adventure"
+    },
+    {
+      "id": 3,
+      "name": "Camp Smiljevići",
+      "image": "https://example.com/images/camp_smiljevici.jpg",
+      "desc": "Located in a forest area with clean air and a great spot for hikers looking for a peaceful retreat.",
+      "rating": 4.2,
+      "price": 20,
+      "duration": "3-5 days",
+      "location": {
+        "latitude": 43.7362,
+        "longitude": 18.4356
+      },
+      "category": "Nature"
+    },
+    {
+      "id": 4,
+      "name": "Camping Bjelasnica",
+      "image": "https://example.com/images/camping_bjelasnica.jpg",
+      "desc": "A camping site near the Bjelasnica mountain, offering amazing views and an ideal spot for skiing in winter.",
+      "rating": 4.7,
+      "price": 35,
+      "duration": "2-5 days",
+      "location": {
+        "latitude": 43.7124,
+        "longitude": 18.3461
+      },
+      "category": "Mountain"
+    },
+    {
+      "id": 5,
+      "name": "Camping Lepenica",
+      "image": "https://example.com/images/camping_lepenica.jpg",
+      "desc": "A tranquil campsite located on the outskirts of Sarajevo, perfect for those looking to disconnect and enjoy nature.",
+      "rating": 4.3,
+      "price": 18,
+      "duration": "1-3 days",
+      "location": {
+        "latitude": 43.8367,
+        "longitude": 18.4092
+      },
+      "category": "Relaxation"
+    }
+  ]
+  
