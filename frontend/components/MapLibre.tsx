@@ -51,19 +51,7 @@ const MapLibre = () => {
       cameraRef.current.setCamera({
         centerCoordinate: [coords.longitude, coords.latitude],
         zoomLevel: 11,
-        animationDuration: 3500,
-        animationMode: "easeTo",
       });
-
-      // Remove animation after camera movement is complete
-      setTimeout(() => {
-        if (cameraRef.current) {
-          cameraRef.current.setCamera({
-            animationDuration: 0,
-            animationMode: "linearTo",
-          });
-        }
-      }, 3500); // Match the animation duration
     }
   };
 
@@ -113,7 +101,6 @@ const MapLibre = () => {
           longitude: initialLocation.coords.longitude,
         };
         setCoords(newCoords);
-        centerOnUser(); // Center on user once when we get initial location
 
         // Start watching location without moving the camera
         locationSubscription = await Location.watchPositionAsync(
@@ -158,14 +145,21 @@ const MapLibre = () => {
     return (
       <View>
         <MapView
+          compassEnabled={true}
+          compassViewPosition={0}
           style={{ width: "100%", height: "100%" }}
           mapStyle="https://tiles.openfreemap.org/styles/liberty"
         >
-          <Camera
-            ref={cameraRef}
-            animationDuration={3500}
-            animationMode="easeTo"
-          />
+          {coords && (
+            <Camera
+              ref={cameraRef}
+              centerCoordinate={[coords.longitude, coords.latitude]}
+              zoomLevel={11}
+              animationDuration={3500}
+              animationMode="easeTo"
+            />
+          )}
+
           {coords && (
             <PointAnnotation
               id="userLocation"
@@ -173,7 +167,9 @@ const MapLibre = () => {
             >
               <Callout>
                 <View className="bg-white px-3 py-1 rounded-lg border border-gray-300">
-                  <Text className="text-sm text-gray-800">You are here</Text>
+                  <Text className="text-sm text-gray-800 font-semibold">
+                    You are here
+                  </Text>
                 </View>
               </Callout>
             </PointAnnotation>
@@ -203,14 +199,23 @@ const MapLibre = () => {
             />
           </ShapeSource>
         </MapView>
-        {coords && (
+
+        <View className="absolute top-4 right-4 flex flex-col gap-2">
+          {coords && (
+            <TouchableOpacity
+              onPress={centerOnUser}
+              className="flex items-center justify-center bg-white p-3 rounded-full shadow-lg shadow-black"
+            >
+              <FontAwesome name="location-arrow" size={24} color="#0D7377" />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
-            onPress={centerOnUser}
-            className="absolute top-4 right-4 bg-white p-4 rounded-full shadow-md"
+            onPress={() => alert("Map info page")}
+            className="flex items-center justify-center bg-white p-3 rounded-full shadow-lg shadow-black"
           >
-            <FontAwesome name="location-arrow" size={24} color="#0D7377" />
+            <FontAwesome name="question" size={24} color="#0D7377" />
           </TouchableOpacity>
-        )}
+        </View>
       </View>
     );
   }
