@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flexDirection: "row",
-    padding: 6, // Smaller padding inside the box
+    padding: 6,
   },
   // Commenting out image style for now
   // image: {

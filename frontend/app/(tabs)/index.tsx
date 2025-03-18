@@ -8,6 +8,7 @@ import {
   Platform,
   StatusBar,
   ImageBackground,
+  TextInput,
 } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -16,6 +17,7 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import RecommendButtons from "@/components/rbuttons";
 import Places from "@/components/places";
 import places from "@/data/places.json";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Page() {
   const navigation = useNavigation();
@@ -66,8 +68,20 @@ export default function Page() {
       >
         <View style={styles.headerContainer}></View>
       </ImageBackground>
-
       <View style={styles.contentContainer}>
+        <View style={styles.searchContainer}>
+          <Ionicons
+            name="search"
+            size={20}
+            color="#888"
+            style={styles.searchIcon}
+          />
+          <TextInput
+            placeholder="Search"
+            clearButtonMode="always"
+            style={styles.searchBar}
+          />
+        </View>
         <RecommendButtons onCategorySelect={setSelectedCategory} />
         <Places places={filteredPlaces} />
       </View>
@@ -94,6 +108,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingTop: Platform.OS === "ios" ? 40 : 20,
   },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderColor: "#ccc",
+    borderWidth: 1,
+    borderRadius: 20,
+    paddingHorizontal: 15,
+    paddingVertical: 8,
+    marginHorizontal: 10,
+    marginTop: -10,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchBar: {
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+  },
+
   menuIcon: {
     padding: 10,
   },
@@ -105,5 +140,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     overflow: "hidden",
     marginTop: -30,
+    paddingTop: 30,
   },
 });
