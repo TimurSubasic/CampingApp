@@ -24,30 +24,6 @@ export default function Page() {
   const headerHeight = useHeaderHeight();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerTransparent: true,
-      headerTitle: "",
-      headerLeft: () => (
-        <View
-          style={{ flexDirection: "row", alignItems: "center", marginLeft: 10 }}
-        >
-          <TouchableOpacity onPress={() => {}}>
-            <Ionicons
-              name="menu-outline"
-              size={30}
-              color="white"
-              style={styles.menuIcon}
-            />
-          </TouchableOpacity>
-        </View>
-      ),
-      headerRight: () => (
-        <TouchableOpacity onPress={() => {}}></TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
-
   // Select places from 'All' for 'Hidden Gems'
   const hiddenGems = places.slice(0, 1);
 
@@ -61,6 +37,19 @@ export default function Page() {
 
   return (
     <View style={[styles.container]}>
+      {/* menu btn */}
+
+      <View className="absolute top-2 left-2 z-50">
+        <TouchableOpacity onPress={() => {}}>
+          <Ionicons
+            name="menu-outline"
+            size={30}
+            color="white"
+            style={styles.menuIcon}
+          />
+        </TouchableOpacity>
+      </View>
+
       {/* Background image for the top section */}
       <ImageBackground
         source={require("@/assets/images/camper.jpeg")}
